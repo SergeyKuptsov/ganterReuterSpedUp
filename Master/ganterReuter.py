@@ -32,15 +32,26 @@ def closure_of_set (A, transactions, item_transactions,unique):
 
 def max_wrt_order (A, sort):
     if len(A)>0:
-        return sorted(A, key=lambda A: sort.index(A[0]))[len(A)-1]
+        curr_max = sort[A[0]]
+        temp_sort={}
+        for a in A:
+            temp_sort.update({a:sort[a]})
+        for a in A:
+            #print(curr_max)
+            if temp_sort[a] >= curr_max:
+                curr_max = sort[a]
+        ret_key=""
+        for key in temp_sort.keys():
+            if temp_sort[key] == curr_max:
+                ret_key=key
+        return ret_key
     else:
-        return sort[len(sort)-1]
+        for key in temp_sort.keys():
+            if temp_sort[key] == max(temp_sort.keys(), key=(lambda k: temp_sort[k])):
+                return key
 
 def get_index_order(c, sort):
-    if c != 'NONE':
-        return sort.index(c)
-    else:
-        return math.inf
+    return sort[c]
 
 
 def ganterReuter(transactions, item_transactions, sort, merge=False):
@@ -63,15 +74,14 @@ def ganterReuter(transactions, item_transactions, sort, merge=False):
         if checkSupport == len(transactions):
             closedSets =  list(transactions.values())
             closedSets.append('')
-            #print("Closure Calls ", counterCalls)
-            #print("Collisions ", counterCollisions)
+            print("Closure Calls ", counterCalls)
+            print("Collisions ", counterCollisions)
             return closedSets
     while ( set(var) & set(sort) != set (sort)):
         for char in sort:
             if char not in A:
                 #print('CHAR: ' , char)
                 temp = closure_of_set(increment(A,char,sort),transactions, item_transactions,sort)
-
                 #print("CLOSURE: ", temp)
                 counterCalls += 1
                 var = temp[:]
@@ -80,26 +90,19 @@ def ganterReuter(transactions, item_transactions, sort, merge=False):
                 for elt in A:
                     if elt in temp:
                         temp.remove(str(elt))
-                if not merge:
-                    try:
-                        max_el = max_wrt_order(temp,sort)
-                    except:
-                        max_el = 'NONE'
-                    #print("MAX_ELT: ", max_el)
-                    #print("COMPARISON: ", get_index_order(max_el,sort) <= get_index_order(char,sort))
-                    if get_index_order(max_el,sort) <= get_index_order(char,sort):
-                        A=var
-                        closedSets.append(A)
-                        break
-                    else:
-                        counterCollisions += 1
-                else:
+                max_el = max_wrt_order(temp,sort)
+                #print("MAX_ELT: ", max_el)
+                #print("max: ", get_index_order(max_el,sort))
+                #print("char: ", get_index_order(char,sort))
+                #print("COMPARISON: ", get_index_order(max_el,sort) <= get_index_order(char,sort))
+                if get_index_order(max_el,sort) <= get_index_order(char,sort):
                     A=var
                     closedSets.append(A)
                     break
-                        
-    #print("Closure Calls ", counterCalls)
-    #print("Collisions ", counterCollisions)
+                else:
+                    counterCollisions += 1         
+    print("Closure Calls ", counterCalls)
+    print("Collisions ", counterCollisions)
     if support_of_set(closedSets[len(closedSets)-1],item_transactions) == set():
         closedSets.pop(len(closedSets)-1)
     return closedSets

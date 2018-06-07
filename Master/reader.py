@@ -17,4 +17,4 @@ def readInTransactions(file):
                 unique[char] += 1
                 item_transactions[char].append(tid)
     sort = sorted(unique, key=unique.__getitem__, reverse=True) #descending ordering of the elements by frequency
-    return (unique, item_transactions, sort, transactions, tid)
+    return ( dict(sorted(unique.items())), item_transactions, sort, transactions, tid)
