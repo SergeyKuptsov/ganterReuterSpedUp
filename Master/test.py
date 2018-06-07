@@ -1,5 +1,6 @@
 from reader import *
 from ganterReuter import *
+from order import *
 import time
 start_time = time.time()
 
@@ -78,3 +79,6 @@ start_time = time.time()
 for instance in reversed(GR_outputs):
    dump = mergeOutputs(dump,instance, item_transactions,transactionsCount)
 #print(dump)
+print(freqOrder(unique))
+print(abOrder(unique))
+print(freqReverseOrder(unique))
