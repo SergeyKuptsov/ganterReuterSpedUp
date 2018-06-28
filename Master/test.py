@@ -61,7 +61,7 @@ if(text == "4"):
       for a in split_instances[sub_inst]:
          curr_instance.update({a:sub_inst})
       ##print(curr_instance)
-      GR_outputs.append(ganterReuter(sub_transactions,item_transactions,freqOrderForMerge(curr_instance),True))
+      GR_outputs.append(ganterReuter(sub_transactions,item_transactions,freqOrderForMerge(curr_instance),False))
       sub_transactions.clear()
       #print(GR_outputs[counter])
    timeRn = time.time() - start_time
@@ -98,7 +98,7 @@ if(text == "5"):
       for a in split_instances[sub_inst]:
          curr_instance.update({a:sub_inst})
       print(curr_instance)
-      GR_outputs.append(ganterReuter(sub_transactions,item_transactions,freqOrderForMerge(curr_instance),True))
+      GR_outputs.append(ganterReuter(sub_transactions,item_transactions,freqOrderForMerge(curr_instance),False))
       sub_transactions.clear()
       #print(GR_outputs[counter])
       counter += 1

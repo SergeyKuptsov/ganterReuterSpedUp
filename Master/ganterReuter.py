@@ -100,7 +100,8 @@ def ganterReuter(transactions, item_transactions, sort, merge=False):
                     closedSets.append(A)
                     break
                 else:
-                    counterCollisions += 1         
+                    counterCollisions += 1  
+                    print("Collided at: ", var, "with literal: ", char)       
     print("Closure Calls ", counterCalls)
     print("Collisions ", counterCollisions)
     if support_of_set(closedSets[len(closedSets)-1],item_transactions) == set():
@@ -122,7 +123,7 @@ def mergeOutputs(A,B,item_transactions,transactionsCount):
             sup_b = set(support_of_set(b,item_transactions,transactionsCount))
             if (sup_a & sup_b):
                 candidate = list(set(a).union(set(b)))[:]
-               #print("Candidate: ", candidate)
+                #print("Candidate: ", candidate)
                 if '' in candidate and len(candidate)>1:
                     candidate.remove('')
                     #print("Candidate cleared: ", candidate)
