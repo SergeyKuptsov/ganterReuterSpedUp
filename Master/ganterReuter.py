@@ -101,12 +101,12 @@ def ganterReuter(transactions, item_transactions, sort, merge=False):
                     break
                 else:
                     counterCollisions += 1  
-                    print("Collided at: ", var, "with literal: ", char)       
-    print("Closure Calls ", counterCalls)
-    print("Collisions ", counterCollisions)
+                    #print("Collided at: ", var, "with literal: ", char)       
+    #print("Closure Calls ", counterCalls)
+    #print("Collisions ", counterCollisions)
     if support_of_set(closedSets[len(closedSets)-1],item_transactions) == set():
         closedSets.pop(len(closedSets)-1)
-    return closedSets
+    return [closedSets, counterCalls,counterCollisions]
 
 def mergeOutputs(A,B,item_transactions,transactionsCount):
     start_time = time.time()

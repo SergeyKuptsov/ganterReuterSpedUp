@@ -1,43 +1,127 @@
 from reader import *
 from ganterReuter import *
 from order import *
+from random_sampler3 import *
+
+import sys
+import matplotlib.pyplot as plt
 import time
+
 text = input("Exp Num?")
-unique = {}
-items_transactions = {}
-sort = {}
-transactions = {}
-split_instances = {}
-transactionsCout = 0
-unique, item_transactions, sort, transactions , transactionsCount= readInTransactions('transactions.txt')
-print("unique: ",unique)
+#unique = {}
+#items_transactions = {}
+#sort = {}
+#transactions = {}
+#split_instances = {}
+#transactionsCout = 0
+#unique, item_transactions, sort, transactions , transactionsCount= readInTransactions('transactions.txt')
+#print("unique: ",unique)
+old_stdout = sys.stdout
+
 if(text == "1"):
    print('---------------------------------------------------------------------')
    print("GR original sort")
-   print("freqOrder: ",freqOrder(unique))
-   start_time = time.time()
-   print(ganterReuter(transactions,item_transactions,freqOrder(unique)))
-   timeRn = time.time() - start_time
-   print("--- %s milliseconds ---" % ((timeRn) * 1000))
-   print('---------------------------------------------------------------------')
+   #print("freqOrder: ",freqOrder(unique))
+   calls=[]
+   collisions=[]
+   #start_time = time.time()
+   for k in range(20):
+      print("Sample Size: ", (k+1)*20)
+      log_file = open("Sample_"+str((k+1)*20)+"_sorted.log","w")
+      sys.stdout = log_file
+      print("Sample Size: ", (k+1)*20)
+      for n in range(10,76):
+         unique = {}
+         items_transactions = {}
+         sort = {}
+         transactions = {}
+         split_instances = {}
+         closed_sets = {}
+         transactionsCout = 0
+         closureCalls=0
+         collisions=0
+         unique, item_transactions, sort, transactions , transactionsCount= readInTrunkatedChunkTransactions(random_sampler("chess.txt",(k+1)*20),n)
+         closed_sets, closureCalls, collisions = ganterReuter(transactions,item_transactions,freqOrder(unique))
+         #timeRn = time.time() - start_time
+         if n%5==0:
+            print("      itemset Size: ", n)
+            print("            Closure Calls: ",closureCalls)
+            print("            Colisions: ",collisions)
+            print("---***---")
+   #print("--- %s milliseconds ---" % ((timeRn) * 1000))
+      sys.stdout = old_stdout
+      log_file.close()
+      print('---------------------------------------------------------------------')
+
 if(text == "2"):
    print('---------------------------------------------------------------------')
    print("GR original reverse sort")
-   print("freqReversedOrder: ",freqReverseOrder(unique))
-   start_time = time.time()
-   print(ganterReuter(transactions,item_transactions,freqReverseOrder(unique)))
-   timeRn = time.time() - start_time
-   print("--- %s milliseconds ---" % ((timeRn) * 1000))
-   print('---------------------------------------------------------------------')
+      #print("freqOrder: ",freqOrder(unique))
+   calls=[]
+   collisions=[]
+   #start_time = time.time()
+   for k in range(20):
+      print("Sample Size: ", (k+1)*20)
+      log_file = open("Sample_"+str((k+1)*20)+"_reverse_sorted.log","w")
+      sys.stdout = log_file
+      print("Sample Size: ", (k+1)*20)
+      for n in range(10,76):
+         unique = {}
+         items_transactions = {}
+         sort = {}
+         transactions = {}
+         split_instances = {}
+         closed_sets = {}
+         transactionsCout = 0
+         closureCalls=0
+         collisions=0
+         unique, item_transactions, sort, transactions , transactionsCount= readInTrunkatedChunkTransactions(random_sampler("chess.txt",(k+1)*20),n)
+         closed_sets, closureCalls, collisions = ganterReuter(transactions,item_transactions,freqReverseOrder(unique))
+         #timeRn = time.time() - start_time
+         if n%5==0:
+            print("      itemset Size: ", n)
+            print("            Closure Calls: ",closureCalls)
+            print("            Colisions: ",collisions)
+            print("---***---")
+   #print("--- %s milliseconds ---" % ((timeRn) * 1000))
+      sys.stdout = old_stdout
+      log_file.close()
+      print('---------------------------------------------------------------------')
+
 if(text == "3"):
    print('---------------------------------------------------------------------')
    print("GR original")
-   print("abOrder: ",abOrder(unique))
-   start_time = time.time()
-   print(ganterReuter(transactions,item_transactions,abOrder(unique)))
-   timeRn = time.time() - start_time
-   print("--- %s milliseconds ---" % ((timeRn) * 1000))
-   print('---------------------------------------------------------------------')
+   #print("freqOrder: ",freqOrder(unique))
+   calls=[]
+   collisions=[]
+   #start_time = time.time()
+   for k in range(20):
+      print("Sample Size: ", (k+1)*20)
+      log_file = open("Sample_"+str((k+1)*20)+"_alphabethic.log","w")
+      sys.stdout = log_file
+      print("Sample Size: ", (k+1)*20)
+      for n in range(10,76):
+         unique = {}
+         items_transactions = {}
+         sort = {}
+         transactions = {}
+         split_instances = {}
+         closed_sets = {}
+         transactionsCout = 0
+         closureCalls=0
+         collisions=0
+         unique, item_transactions, sort, transactions , transactionsCount= readInTrunkatedChunkTransactions(random_sampler("chess.txt",(k+1)*20),n)
+         closed_sets, closureCalls, collisions = ganterReuter(transactions,item_transactions,abOrder(unique))
+         #timeRn = time.time() - start_time
+         if n%5==0:
+            print("      itemset Size: ", n)
+            print("            Closure Calls: ",closureCalls)
+            print("            Colisions: ",collisions)
+            print("---***---")
+   #print("--- %s milliseconds ---" % ((timeRn) * 1000))
+      sys.stdout = old_stdout
+      log_file.close()
+      print('---------------------------------------------------------------------')
 if(text == "4"):
    print('---------------------------------------------------------------------')
    print("GR Merge(tree)")
@@ -50,7 +134,7 @@ if(text == "4"):
    print(split_instances)
    start_time = time.time()
    counter = 0
-   GR_outputs = []
+   GR_outputs = [['']]
    sub_transactions = {}
    for sub_inst in split_instances:
       for tr in transactions:
@@ -61,9 +145,10 @@ if(text == "4"):
       for a in split_instances[sub_inst]:
          curr_instance.update({a:sub_inst})
       ##print(curr_instance)
-      GR_outputs.append(ganterReuter(sub_transactions,item_transactions,freqOrderForMerge(curr_instance),False))
+      GR_outputs.append(ganterReuter(sub_transactions,item_transactions,freqOrder(curr_instance),False)[0])
       sub_transactions.clear()
       #print(GR_outputs[counter])
+      counter+=1
    timeRn = time.time() - start_time
    print("--- %s milliseconds ---" % ((timeRn) * 1000))
    start_time = time.time()
@@ -87,7 +172,7 @@ if(text == "5"):
          split_instances[unique[c]].append(c)
    start_time = time.time()
    counter = 0
-   GR_outputs = []
+   GR_outputs = [['']]
    sub_transactions = {}
    for sub_inst in split_instances:
       for tr in transactions:
@@ -98,7 +183,7 @@ if(text == "5"):
       for a in split_instances[sub_inst]:
          curr_instance.update({a:sub_inst})
       print(curr_instance)
-      GR_outputs.append(ganterReuter(sub_transactions,item_transactions,freqOrderForMerge(curr_instance),False))
+      GR_outputs.append(ganterReuter(sub_transactions,item_transactions,freqOrder(curr_instance),False)[0])
       sub_transactions.clear()
       #print(GR_outputs[counter])
       counter += 1
@@ -110,5 +195,5 @@ if(text == "5"):
       dump = mergeOutputs(dump,instance, item_transactions,transactionsCount)
    timeRn = time.time() - start_time
    print("---  Merged in %s milliseconds ---" % ((timeRn) * 1000))
-   print(dump)
+   print(len(dump))
    print('---------------------------------------------------------------------')
